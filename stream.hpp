@@ -59,40 +59,34 @@ public:
     const T& at(const int); // Get one element, evaluate if necessary
 
     Stream(const Stream<T>& rhs) :
-        memo(rhs.memo),
-        last(rhs.last),
-        seed(rhs.seed),
-        stepper(rhs.stepper),
-        predicate(rhs.predicate),
-        post(rhs.post)
-    {}
+        memo(rhs.memo), last(rhs.last), seed(rhs.seed),
+        stepper(rhs.stepper), predicate(rhs.predicate), post(rhs.post){ }
 
     Stream& operator=(const Stream<T>&) { return Stream(this); }
-    ~Stream() {};
+    ~Stream() { };
 };
 
 template <class T>
 Stream<T> Stream<T>::from(const T &seed) {
-    Stream<T> newStream(seed);
-    return newStream;
+    return Stream<T>(seed);
 }
 
 template <class T>
-Stream<T>& Stream<T>::step(const function<T (T x)> &stepper) {
+Stream<T>& Stream<T>::step(const function<T(T)> &stepper) {
     this->stepper = compose<T,T,T>(stepper, this->stepper);
-    return (*this);
+    return *this;
 }
 
 template <class T>
-Stream<T>& Stream<T>::map(const function <T (T x)> &post) {
+Stream<T>& Stream<T>::map(const function <T(T)> &post) {
     this->post = compose<T,T,T>(post, this->post);
-    return (*this);
+    return *this;
 }
 
 template <class T>
-Stream<T>& Stream<T>::filter(const function <bool (T x)> &predicate) {
+Stream<T>& Stream<T>::filter(const function <bool(T)> &predicate) {
     this->predicate = composeAnd<T>(predicate, this->predicate);
-    return (*this);
+    return *this;
 }
 
 template <class T>
